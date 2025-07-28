@@ -7,6 +7,9 @@ import Blogs from './components/Blogs/Blogs';
 import About from './components/About/About';
 import Footer from './components/Footer/Footer';
 import HotelDetails from './components/Services/HotelDetails';
+import Login from './components/SignUp/Login';
+import Signup from './components/SignUp/SignUp';
+
 
 const App = () => {
   return (
@@ -18,8 +21,9 @@ const App = () => {
         <Route path="/services/:hotelId" element={<HotelDetails />} />
         <Route path="/blogs" element={<Blogs />} />
         <Route path="/about" element={<About />} />
-        {/* <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} /> */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+
       </Routes>
       <Footer/>
     </>

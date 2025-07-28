@@ -1,28 +1,79 @@
-import React, { useState } from 'react';
-import { supabase } from './../../../supabaseClient';
+// src/components/SignUp/SignUp.jsx
 
-const Signup = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+import React, { useState } from "react";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../firebase"; // ✅ adjust path if needed
+import { useNavigate } from "react-router-dom";
 
-  const handleSignup = async (e) => {
+const SignUp = () => {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const handleSignUp = async (e) => {
     e.preventDefault();
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-    });
-    if (error) alert(error.message);
-    else alert('Signup successful! Check your email to confirm.');
+    setError("");
+
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      alert("Signup successful!");
+      navigate("/"); // ✅ redirect to home
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   return (
-    <form onSubmit={handleSignup} className="space-y-4 p-4 max-w-md mx-auto">
-      <h2 className="text-xl font-bold">Sign Up</h2>
-      <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" className="w-full border p-2 rounded" />
-      <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" className="w-full border p-2 rounded" />
-      <button type="submit" className="w-full bg-blue-600 text-white p-2 rounded">Sign Up</button>
-    </form>
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 px-4">
+      <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-md">
+        <h2 className="text-2xl font-bold mb-6 text-center">Create your StayMaster Account</h2>
+
+        {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+
+        <form onSubmit={handleSignUp} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium mb-1">Email</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-400"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">Password</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-400"
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="w-full bg-purple-600 text-white py-2 rounded-md hover:bg-purple-700 transition duration-200"
+          >
+            Sign Up
+          </button>
+        </form>
+
+        <p className="text-sm text-center mt-4">
+          Already have an account?{" "}
+          <span
+            className="text-purple-600 hover:underline cursor-pointer"
+            onClick={() => navigate("/login")}
+          >
+            Log in here
+          </span>
+        </p>
+      </div>
+    </div>
   );
 };
 
-export default Signup;
+export default SignUp;
